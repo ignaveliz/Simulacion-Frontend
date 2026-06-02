@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Recycle, Play, DollarSign, Weight, Cpu, Truck,
-  FlaskConical, Gem, AlertTriangle, TrendingUp,
+  FlaskConical, Gem, AlertTriangle, TrendingUp, Users, AlertOctagon
 } from 'lucide-react';
 import MetricCard from './components/MetricCard';
 import ChartsSection from './components/ChartsSection';
@@ -13,6 +13,9 @@ const API_BASE = 'http://localhost:5262';
 function App() {
   const [dias, setDias] = useState(30);
   const [camionetas, setCamionetas] = useState(5);
+  const [capacidadAlmacen, setCapacidadAlmacen] = useState(375.0);
+  const [operariosCRT, setOperariosCRT] = useState(2);
+  const [operariosPlanas, setOperariosPlanas] = useState(3);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ResultadoSimulacion | null>(null);
@@ -22,7 +25,7 @@ function App() {
     setError(null);
     try {
       const res = await fetch(
-        `${API_BASE}/api/simulacion/ejecutar?dias=${dias}&camionetasPorDia=${camionetas}`,
+        `${API_BASE}/api/simulacion/ejecutar?dias=${dias}&camionetasPorDia=${camionetas}&capacidadAlmacenM3=${capacidadAlmacen}&operariosCRT=${operariosCRT}&operariosPlanas=${operariosPlanas}`,
         { method: 'POST' },
       );
       if (!res.ok) {
@@ -89,6 +92,43 @@ function App() {
             onChange={(e) => setCamionetas(Math.max(1, Number(e.target.value)))}
           />
         </div>
+        <div className="config-panel__group">
+          <label className="config-panel__label" htmlFor="input-almacen">Almacén (m²)</label>
+          <input
+            id="input-almacen"
+            className="config-panel__input"
+            type="number"
+            min={50}
+            max={2000}
+            step={0.5}
+            value={capacidadAlmacen}
+            onChange={(e) => setCapacidadAlmacen(Math.max(1, Number(e.target.value)))}
+          />
+        </div>
+        <div className="config-panel__group">
+          <label className="config-panel__label" htmlFor="input-op-crt">Operarios CRT</label>
+          <input
+            id="input-op-crt"
+            className="config-panel__input"
+            type="number"
+            min={1}
+            max={20}
+            value={operariosCRT}
+            onChange={(e) => setOperariosCRT(Math.max(1, Number(e.target.value)))}
+          />
+        </div>
+        <div className="config-panel__group">
+          <label className="config-panel__label" htmlFor="input-op-planas">Operarios LCD/LED</label>
+          <input
+            id="input-op-planas"
+            className="config-panel__input"
+            type="number"
+            min={1}
+            max={20}
+            value={operariosPlanas}
+            onChange={(e) => setOperariosPlanas(Math.max(1, Number(e.target.value)))}
+          />
+        </div>
         <button
           className="btn btn--primary"
           onClick={handleRun}
@@ -126,12 +166,36 @@ function App() {
           {/* ─── KPI Cards ─── */}
           <section className="metrics-grid" id="kpi-section">
             <MetricCard
+              label="Utilización CRT"
+              value={`${t.utilizacionPromedioCRT}%`}
+              sub={`Saturación: ${t.diasSaturacionCRT} días`}
+              icon={<Users size={20} />}
+              variant={t.utilizacionPromedioCRT >= 90 ? "rose" : "indigo"}
+              delay={1}
+            />
+            <MetricCard
+              label="Utilización Planas"
+              value={`${t.utilizacionPromedioPlanas}%`}
+              sub={`Saturación: ${t.diasSaturacionPlanas} días`}
+              icon={<Users size={20} />}
+              variant={t.utilizacionPromedioPlanas >= 90 ? "rose" : "sky"}
+              delay={2}
+            />
+            <MetricCard
+              label="Rechazos por Almacén"
+              value={t.totalCamionetasRechazadas.toLocaleString('es-AR')}
+              sub="Camionetas rechazadas"
+              icon={<AlertOctagon size={20} />}
+              variant={t.totalCamionetasRechazadas > 0 ? "rose" : "emerald"}
+              delay={3}
+            />
+            <MetricCard
               label="Ganancia Neta"
               value={`$${fmt(t.gananciaNeta)}`}
               sub={`Ingresos $${fmt(t.ingresosTotales)} · Costos $${fmt(t.costosTotales)}`}
               icon={<DollarSign size={20} />}
               variant="emerald"
-              delay={1}
+              delay={4}
             />
             <MetricCard
               label="Peso Total Procesado"

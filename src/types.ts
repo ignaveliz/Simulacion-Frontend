@@ -29,6 +29,9 @@ export interface ResumenDia {
   stockFinalLCD: number;
   stockFinalLED: number;
   porcentajeAlmacenamientoOcupado: number;
+  utilizacionOperariosCRT: number;
+  utilizacionOperariosPlanas: number;
+  camionetasRechazadas: number;
 }
 
 export interface ResumenTotal {
@@ -47,6 +50,11 @@ export interface ResumenTotal {
   ingresosTotales: number;
   costosTotales: number;
   gananciaNeta: number;
+  utilizacionPromedioCRT: number;
+  utilizacionPromedioPlanas: number;
+  diasSaturacionCRT: number;
+  diasSaturacionPlanas: number;
+  totalCamionetasRechazadas: number;
 }
 
 export interface ResultadoSimulacion {
