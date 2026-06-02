@@ -18,12 +18,15 @@ export default function SimulationTable({ data }: SimulationTableProps) {
 
   const handleExportCSV = () => {
     const headers = [
-      'Día', 'Desmantelamiento', 'CRT', 'LCD', 'LED', 'Refurbishment', 'Descartados',
+      'Día', 'Desmantelamiento', '% Almacenamiento', 'Stock Final CRT', 'Stock Final LCD', 'Stock Final LED',
+      'CRT', 'LCD', 'LED', 'Refurbishment', 'Descartados',
       'Peso (kg)', 'Peso Tóxico (kg)', 'Costo Tóxico ($)', 'Cobre (kg)', 'Oro (kg)',
       'Plata (kg)', 'PCB (kg)', 'Ingresos ($)', 'Costos ($)', 'Ganancia ($)',
     ];
     const rows = data.map((d) => [
-      d.dia, d.totalDesmantelamiento, d.totalCRT, d.totalLCD, d.totalLED,
+      d.dia, d.totalDesmantelamiento, d.porcentajeAlmacenamientoOcupado.toFixed(2) + '%', 
+      d.stockFinalCRT, d.stockFinalLCD, d.stockFinalLED,
+      d.totalCRT, d.totalLCD, d.totalLED,
       d.totalRefurbishment, d.totalDescartados, d.pesoTotalKg.toFixed(2),
       d.pesoToxiKg.toFixed(2), d.costoDisposicionToxico.toFixed(2),
       d.totalCobreKG.toFixed(4), d.totalOroKG.toFixed(6), d.totalPlataKG.toFixed(6),
@@ -59,16 +62,16 @@ export default function SimulationTable({ data }: SimulationTableProps) {
             <tr>
               <th>Día</th>
               <th>Desmant.</th>
+              <th>% Acopio</th>
+              <th>WIP CRT</th>
+              <th>WIP LCD</th>
+              <th>WIP LED</th>
               <th>CRT</th>
               <th>LCD</th>
               <th>LED</th>
               <th>Refurb.</th>
               <th>Descart.</th>
               <th>Peso (kg)</th>
-              <th>Tóxico (kg)</th>
-              <th>Cobre (kg)</th>
-              <th>Oro (kg)</th>
-              <th>Plata (kg)</th>
               <th>Ingresos ($)</th>
               <th>Costos ($)</th>
               <th>Ganancia ($)</th>
@@ -79,16 +82,18 @@ export default function SimulationTable({ data }: SimulationTableProps) {
               <tr key={d.dia}>
                 <td>{d.dia}</td>
                 <td>{fmtInt(d.totalDesmantelamiento)}</td>
+                <td style={{ color: d.porcentajeAlmacenamientoOcupado >= 100 ? '#fb7185' : '#38bdf8' }}>
+                  {fmt(d.porcentajeAlmacenamientoOcupado)}%
+                </td>
+                <td>{fmtInt(d.stockFinalCRT)}</td>
+                <td>{fmtInt(d.stockFinalLCD)}</td>
+                <td>{fmtInt(d.stockFinalLED)}</td>
                 <td>{fmtInt(d.totalCRT)}</td>
                 <td>{fmtInt(d.totalLCD)}</td>
                 <td>{fmtInt(d.totalLED)}</td>
                 <td>{fmtInt(d.totalRefurbishment)}</td>
                 <td>{fmtInt(d.totalDescartados)}</td>
                 <td>{fmt(d.pesoTotalKg)}</td>
-                <td>{fmt(d.pesoToxiKg)}</td>
-                <td>{fmt(d.totalCobreKG, 4)}</td>
-                <td>{fmt(d.totalOroKG, 6)}</td>
-                <td>{fmt(d.totalPlataKG, 6)}</td>
                 <td style={{ color: '#34d399' }}>{fmt(d.ingresosDia)}</td>
                 <td style={{ color: '#fb7185' }}>{fmt(d.costosDia)}</td>
                 <td style={{ color: d.gananciaDia >= 0 ? '#34d399' : '#fb7185', fontWeight: 600 }}>

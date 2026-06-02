@@ -21,6 +21,14 @@ export interface ResumenDia {
   costosDia: number;
   gananciaDia: number;
   pcBacumuladoKg: number;
+  // Campos de inventario y almacenamiento
+  stockInicialCRT: number;
+  stockInicialLCD: number;
+  stockInicialLED: number;
+  stockFinalCRT: number;
+  stockFinalLCD: number;
+  stockFinalLED: number;
+  porcentajeAlmacenamientoOcupado: number;
 }
 
 export interface ResumenTotal {
