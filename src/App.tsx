@@ -56,7 +56,7 @@ function App() {
             <Recycle size={26} color="#0a0e1a" />
           </div>
           <div>
-            <h1 className="app-header__title">Planta de Reciclaje Electrónico</h1>
+            <h1 className="app-header__title">Simulación · EMA SRL - Evaluación Medioambiental S.R.L.</h1>
             <p className="app-header__subtitle">Panel de simulación</p>
           </div>
         </div>
@@ -268,7 +268,7 @@ function App() {
 
       {/* ─── Footer ─── */}
       <footer style={{ textAlign: 'center', padding: '24px 0 32px', color: '#64748b', fontSize: '0.75rem' }}>
-        Simulación · Planta de Reciclaje Electrónico · {new Date().getFullYear()}
+        Simulación · EMA SRL - Evaluación Medioambiental S.R.L. · {new Date().getFullYear()}
       </footer>
     </div>
   );
