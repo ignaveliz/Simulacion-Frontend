@@ -16,33 +16,6 @@ export default function SimulationTable({ data }: SimulationTableProps) {
   const fmt = (n: number, d = 2) => n.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
   const fmtInt = (n: number) => n.toLocaleString('es-AR');
 
-  const handleExportCSV = () => {
-    const headers = [
-      'Día', 'Desmantelamiento', '% Almacenamiento', 'Stock Final CRT', 'Stock Final LCD', 'Stock Final LED',
-      'CRT', 'LCD', 'LED', 'Refurbishment', 'Descartados',
-      'Peso (kg)', 'Peso Tóxico (kg)', 'Costo Tóxico ($)', 'Cobre (kg)', 'Oro (kg)',
-      'Plata (kg)', 'PCB (kg)', 'Ingresos ($)', 'Costos ($)', 'Ganancia ($)',
-    ];
-    const rows = data.map((d) => [
-      d.dia, d.totalDesmantelamiento, d.porcentajeAlmacenamientoOcupado.toFixed(2) + '%', 
-      d.stockFinalCRT, d.stockFinalLCD, d.stockFinalLED,
-      d.totalCRT, d.totalLCD, d.totalLED,
-      d.totalRefurbishment, d.totalDescartados, d.pesoTotalKg.toFixed(2),
-      d.pesoToxiKg.toFixed(2), d.costoDisposicionToxico.toFixed(2),
-      d.totalCobreKG.toFixed(4), d.totalOroKG.toFixed(6), d.totalPlataKG.toFixed(6),
-      d.totalPCBKg.toFixed(4), d.ingresosDia.toFixed(2), d.costosDia.toFixed(2),
-      d.gananciaDia.toFixed(2),
-    ]);
-    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `simulacion_resultados.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="table-section animate-in">
       <div className="table-section__header">
@@ -50,10 +23,6 @@ export default function SimulationTable({ data }: SimulationTableProps) {
           <Table size={20} style={{ color: '#818cf8' }} />
           Detalle Diario de la Simulación
         </div>
-        <button className="btn btn--secondary" onClick={handleExportCSV} id="export-csv-btn">
-          <Download size={14} />
-          Exportar CSV
-        </button>
       </div>
 
       <div className="table-wrapper">
@@ -63,6 +32,7 @@ export default function SimulationTable({ data }: SimulationTableProps) {
               <th>Día</th>
               <th>Desmant.</th>
               <th>% Acopio</th>
+              <th>Rechazos</th>
               <th>WIP CRT</th>
               <th>WIP LCD</th>
               <th>WIP LED</th>
@@ -84,6 +54,9 @@ export default function SimulationTable({ data }: SimulationTableProps) {
                 <td>{fmtInt(d.totalDesmantelamiento)}</td>
                 <td style={{ color: d.porcentajeAlmacenamientoOcupado >= 100 ? '#fb7185' : '#38bdf8' }}>
                   {fmt(d.porcentajeAlmacenamientoOcupado)}%
+                </td>
+                <td style={{ color: d.camionetasRechazadas > 0 ? '#fb7185' : 'inherit' }}>
+                  {fmtInt(d.camionetasRechazadas)}
                 </td>
                 <td>{fmtInt(d.stockFinalCRT)}</td>
                 <td>{fmtInt(d.stockFinalLCD)}</td>

@@ -11,11 +11,11 @@ import type { ResultadoSimulacion } from './types';
 const API_BASE = 'http://localhost:5262';
 
 function App() {
-  const [dias, setDias] = useState(30);
-  const [camionetas, setCamionetas] = useState(5);
-  const [capacidadAlmacen, setCapacidadAlmacen] = useState(375.0);
-  const [operariosCRT, setOperariosCRT] = useState(2);
-  const [operariosPlanas, setOperariosPlanas] = useState(3);
+  const [dias, setDias] = useState<number | ''>(30);
+  const [camionetas, setCamionetas] = useState<number | ''>(5);
+  const [capacidadAlmacen, setCapacidadAlmacen] = useState<number | ''>(375.0);
+  const [operariosCRT, setOperariosCRT] = useState<number | ''>(2);
+  const [operariosPlanas, setOperariosPlanas] = useState<number | ''>(3);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ResultadoSimulacion | null>(null);
@@ -25,7 +25,7 @@ function App() {
     setError(null);
     try {
       const res = await fetch(
-        `${API_BASE}/api/simulacion/ejecutar?dias=${dias}&camionetasPorDia=${camionetas}&capacidadAlmacenM3=${capacidadAlmacen}&operariosCRT=${operariosCRT}&operariosPlanas=${operariosPlanas}`,
+        `${API_BASE}/api/simulacion/ejecutar?dias=${dias || 30}&camionetasPorDia=${camionetas || 1}&capacidadAlmacenM3=${capacidadAlmacen || 1}&operariosCRT=${operariosCRT || 1}&operariosPlanas=${operariosPlanas || 1}`,
         { method: 'POST' },
       );
       if (!res.ok) {
@@ -57,7 +57,7 @@ function App() {
           </div>
           <div>
             <h1 className="app-header__title">Planta de Reciclaje Electrónico</h1>
-            <p className="app-header__subtitle">Panel de simulación de Monte Carlo</p>
+            <p className="app-header__subtitle">Panel de simulación</p>
           </div>
         </div>
         <div className="app-header__status">
@@ -75,9 +75,16 @@ function App() {
             className="config-panel__input"
             type="number"
             min={1}
-            max={365}
+            max={30}
             value={dias}
-            onChange={(e) => setDias(Math.max(1, Number(e.target.value)))}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === '') setDias('');
+              else {
+                const num = Number(val);
+                setDias(num > 30 ? 30 : num);
+              }
+            }}
           />
         </div>
         <div className="config-panel__group">
@@ -87,9 +94,9 @@ function App() {
             className="config-panel__input"
             type="number"
             min={1}
-            max={100}
+            step={1}
             value={camionetas}
-            onChange={(e) => setCamionetas(Math.max(1, Number(e.target.value)))}
+            onChange={(e) => setCamionetas(e.target.value === '' ? '' : Number(e.target.value))}
           />
         </div>
         <div className="config-panel__group">
@@ -98,11 +105,10 @@ function App() {
             id="input-almacen"
             className="config-panel__input"
             type="number"
-            min={50}
-            max={2000}
-            step={0.5}
+            min={1}
+            step={1}
             value={capacidadAlmacen}
-            onChange={(e) => setCapacidadAlmacen(Math.max(1, Number(e.target.value)))}
+            onChange={(e) => setCapacidadAlmacen(e.target.value === '' ? '' : Number(e.target.value))}
           />
         </div>
         <div className="config-panel__group">
@@ -112,9 +118,9 @@ function App() {
             className="config-panel__input"
             type="number"
             min={1}
-            max={20}
+            step={1}
             value={operariosCRT}
-            onChange={(e) => setOperariosCRT(Math.max(1, Number(e.target.value)))}
+            onChange={(e) => setOperariosCRT(e.target.value === '' ? '' : Number(e.target.value))}
           />
         </div>
         <div className="config-panel__group">
@@ -124,9 +130,9 @@ function App() {
             className="config-panel__input"
             type="number"
             min={1}
-            max={20}
+            step={1}
             value={operariosPlanas}
-            onChange={(e) => setOperariosPlanas(Math.max(1, Number(e.target.value)))}
+            onChange={(e) => setOperariosPlanas(e.target.value === '' ? '' : Number(e.target.value))}
           />
         </div>
         <button
@@ -155,7 +161,7 @@ function App() {
           <h2 className="empty-state__title">Configura tu simulación</h2>
           <p className="empty-state__desc">
             Ajusta los parámetros de días y camionetas, luego presiona
-            <strong> "Ejecutar Simulación"</strong> para ver los resultados del modelo de Monte Carlo
+            <strong> "Ejecutar Simulación"</strong> para ver los resultados del modelo
             aplicado a la planta de reciclaje.
           </p>
         </div>
@@ -262,7 +268,7 @@ function App() {
 
       {/* ─── Footer ─── */}
       <footer style={{ textAlign: 'center', padding: '24px 0 32px', color: '#64748b', fontSize: '0.75rem' }}>
-        Simulación de Monte Carlo · Planta de Reciclaje Electrónico · {new Date().getFullYear()}
+        Simulación · Planta de Reciclaje Electrónico · {new Date().getFullYear()}
       </footer>
     </div>
   );
