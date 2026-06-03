@@ -8,7 +8,7 @@ import ChartsSection from './components/ChartsSection';
 import SimulationTable from './components/SimulationTable';
 import type { ResultadoSimulacion } from './types';
 
-const API_BASE = 'http://localhost:5262';
+const API_BASE = 'https://simulacion-601666437305.southamerica-east1.run.app';
 
 function App() {
   const [dias, setDias] = useState<number | ''>(30);
