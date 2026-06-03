@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Table, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ResumenDia } from '../types';
 
 interface SimulationTableProps {
