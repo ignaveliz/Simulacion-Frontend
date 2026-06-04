@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Recycle, Play, DollarSign, Weight, Cpu, Truck,
-  FlaskConical, Gem, AlertTriangle, TrendingUp, Users, AlertOctagon
+  FlaskConical, Gem, AlertTriangle, TrendingUp, Users, AlertOctagon, CircuitBoard
 } from 'lucide-react';
 import MetricCard from './components/MetricCard';
 import ChartsSection from './components/ChartsSection';
@@ -46,6 +46,7 @@ function App() {
     n.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
 
   const t = result?.totales;
+  const totalPCB = result?.resumenPorDia.reduce((acc, dia) => acc + dia.totalPCBKg, 0) || 0;
 
   return (
     <div className="app-container">
@@ -247,6 +248,13 @@ function App() {
               icon={<Gem size={20} />}
               variant="violet"
               delay={7}
+            />
+            <MetricCard
+              label="PCB Extraído"
+              value={`${fmt(totalPCB, 4)} kg`}
+              icon={<CircuitBoard size={20} />}
+              variant="indigo"
+              delay={8}
             />
             <MetricCard
               label="Ingresos Totales"
