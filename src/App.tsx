@@ -100,7 +100,7 @@ function App() {
           />
         </div>
         <div className="config-panel__group">
-          <label className="config-panel__label" htmlFor="input-almacen">Almacén (m²)</label>
+          <label className="config-panel__label" htmlFor="input-almacen">Almacén (m³)</label>
           <input
             id="input-almacen"
             className="config-panel__input"
