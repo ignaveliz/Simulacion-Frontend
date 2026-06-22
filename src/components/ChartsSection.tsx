@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -22,7 +23,7 @@ const COLORS = {
 
 const PIE_COLORS = [COLORS.rose, COLORS.sky, COLORS.emerald];
 
-export default function ChartsSection({ data }: ChartsSectionProps) {
+export default memo(function ChartsSection({ data }: ChartsSectionProps) {
   // Financial data for area chart
   const financialData = data.map((d) => ({
     name: `Día ${d.dia}`,
@@ -175,4 +176,4 @@ export default function ChartsSection({ data }: ChartsSectionProps) {
       </div>
     </div>
   );
-}
+});

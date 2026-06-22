@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Table, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ResumenDia } from '../types';
 
@@ -8,7 +8,7 @@ interface SimulationTableProps {
 
 const ROWS_PER_PAGE = 10;
 
-export default function SimulationTable({ data }: SimulationTableProps) {
+export default memo(function SimulationTable({ data }: SimulationTableProps) {
   const [page, setPage] = useState(0);
   const totalPages = Math.ceil(data.length / ROWS_PER_PAGE);
   const paged = data.slice(page * ROWS_PER_PAGE, (page + 1) * ROWS_PER_PAGE);
@@ -110,4 +110,4 @@ export default function SimulationTable({ data }: SimulationTableProps) {
       )}
     </div>
   );
-}
+});

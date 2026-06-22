@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 
 interface MetricCardProps {
   label: string;
@@ -9,7 +9,7 @@ interface MetricCardProps {
   delay?: number;
 }
 
-export default function MetricCard({ label, value, sub, icon, variant, delay = 0 }: MetricCardProps) {
+export default memo(function MetricCard({ label, value, sub, icon, variant, delay = 0 }: MetricCardProps) {
   return (
     <div className={`metric-card metric-card--${variant} animate-in animate-in-delay-${delay}`}>
       <div className="metric-card__header">
@@ -20,4 +20,4 @@ export default function MetricCard({ label, value, sub, icon, variant, delay = 0
       {sub && <div className="metric-card__sub">{sub}</div>}
     </div>
   );
-}
+});
