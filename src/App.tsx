@@ -20,12 +20,24 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ResultadoSimulacion | null>(null);
 
+  // Validaciones del lado del cliente
+  const errors = {
+    dias: dias === '' ? 'Requerido' : (isNaN(dias) ? 'Número inválido' : (!Number.isInteger(dias) ? 'Debe ser entero' : (dias <= 0 ? 'Debe ser mayor a 0' : (dias > 30 ? 'Máximo 30 días' : null)))),
+    camionetas: camionetas === '' ? 'Requerido' : (isNaN(camionetas) ? 'Número inválido' : (!Number.isInteger(camionetas) ? 'Debe ser entero' : (camionetas <= 0 ? 'Debe ser mayor a 0' : (camionetas > 100 ? 'Máximo 100' : null)))),
+    capacidadAlmacen: capacidadAlmacen === '' ? 'Requerido' : (isNaN(capacidadAlmacen) ? 'Número inválido' : (capacidadAlmacen <= 0 ? 'Debe ser mayor a 0' : (capacidadAlmacen > 10000 ? 'Máximo 10000' : null))),
+    operariosCRT: operariosCRT === '' ? 'Requerido' : (isNaN(operariosCRT) ? 'Número inválido' : (!Number.isInteger(operariosCRT) ? 'Debe ser entero' : (operariosCRT <= 0 ? 'Debe ser mayor a 0' : (operariosCRT > 100 ? 'Máximo 100' : null)))),
+    operariosPlanas: operariosPlanas === '' ? 'Requerido' : (isNaN(operariosPlanas) ? 'Número inválido' : (!Number.isInteger(operariosPlanas) ? 'Debe ser entero' : (operariosPlanas <= 0 ? 'Debe ser mayor a 0' : (operariosPlanas > 100 ? 'Máximo 100' : null)))),
+  };
+
+  const hasErrors = Object.values(errors).some(err => err !== null);
+
   const handleRun = async () => {
+    if (hasErrors) return;
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(
-        `${API_BASE}/api/simulacion/ejecutar?dias=${dias || 30}&camionetasPorDia=${camionetas || 1}&capacidadAlmacenM3=${capacidadAlmacen || 1}&operariosCRT=${operariosCRT || 1}&operariosPlanas=${operariosPlanas || 1}`,
+        `${API_BASE}/api/simulacion/ejecutar?dias=${dias}&camionetasPorDia=${camionetas}&capacidadAlmacenM3=${capacidadAlmacen}&operariosCRT=${operariosCRT}&operariosPlanas=${operariosPlanas}`,
         { method: 'POST' },
       );
       if (!res.ok) {
@@ -73,78 +85,96 @@ function App() {
           <label className="config-panel__label" htmlFor="input-dias">Días de simulación</label>
           <input
             id="input-dias"
-            className="config-panel__input"
+            className={`config-panel__input ${errors.dias ? 'config-panel__input--error' : ''}`}
             type="number"
-            min={1}
-            max={30}
             value={dias}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === '') setDias('');
-              else {
-                const num = Number(val);
-                setDias(num > 30 ? 30 : num);
-              }
+              setDias(val === '' ? '' : Number(val));
             }}
           />
+          <span className="config-panel__error" style={!errors.dias ? { opacity: 0, userSelect: 'none' } : undefined}>
+            {errors.dias || '\u00A0'}
+          </span>
         </div>
         <div className="config-panel__group">
           <label className="config-panel__label" htmlFor="input-camionetas">Camionetas por día</label>
           <input
             id="input-camionetas"
-            className="config-panel__input"
+            className={`config-panel__input ${errors.camionetas ? 'config-panel__input--error' : ''}`}
             type="number"
-            min={1}
-            step={1}
             value={camionetas}
-            onChange={(e) => setCamionetas(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              setCamionetas(val === '' ? '' : Number(val));
+            }}
           />
+          <span className="config-panel__error" style={!errors.camionetas ? { opacity: 0, userSelect: 'none' } : undefined}>
+            {errors.camionetas || '\u00A0'}
+          </span>
         </div>
         <div className="config-panel__group">
           <label className="config-panel__label" htmlFor="input-almacen">Almacén (m³)</label>
           <input
             id="input-almacen"
-            className="config-panel__input"
+            className={`config-panel__input ${errors.capacidadAlmacen ? 'config-panel__input--error' : ''}`}
             type="number"
-            min={1}
-            step={1}
             value={capacidadAlmacen}
-            onChange={(e) => setCapacidadAlmacen(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              setCapacidadAlmacen(val === '' ? '' : Number(val));
+            }}
           />
+          <span className="config-panel__error" style={!errors.capacidadAlmacen ? { opacity: 0, userSelect: 'none' } : undefined}>
+            {errors.capacidadAlmacen || '\u00A0'}
+          </span>
         </div>
         <div className="config-panel__group">
           <label className="config-panel__label" htmlFor="input-op-crt">Operarios CRT</label>
           <input
             id="input-op-crt"
-            className="config-panel__input"
+            className={`config-panel__input ${errors.operariosCRT ? 'config-panel__input--error' : ''}`}
             type="number"
-            min={1}
-            step={1}
             value={operariosCRT}
-            onChange={(e) => setOperariosCRT(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              setOperariosCRT(val === '' ? '' : Number(val));
+            }}
           />
+          <span className="config-panel__error" style={!errors.operariosCRT ? { opacity: 0, userSelect: 'none' } : undefined}>
+            {errors.operariosCRT || '\u00A0'}
+          </span>
         </div>
         <div className="config-panel__group">
           <label className="config-panel__label" htmlFor="input-op-planas">Operarios LCD/LED</label>
           <input
             id="input-op-planas"
-            className="config-panel__input"
+            className={`config-panel__input ${errors.operariosPlanas ? 'config-panel__input--error' : ''}`}
             type="number"
-            min={1}
-            step={1}
             value={operariosPlanas}
-            onChange={(e) => setOperariosPlanas(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              setOperariosPlanas(val === '' ? '' : Number(val));
+            }}
           />
+          <span className="config-panel__error" style={!errors.operariosPlanas ? { opacity: 0, userSelect: 'none' } : undefined}>
+            {errors.operariosPlanas || '\u00A0'}
+          </span>
         </div>
-        <button
-          className="btn btn--primary"
-          onClick={handleRun}
-          disabled={loading}
-          id="run-simulation-btn"
-        >
-          {loading ? <span className="btn__spinner" /> : <Play size={16} />}
-          {loading ? 'Simulando...' : 'Ejecutar Simulación'}
-        </button>
+        <div className="config-panel__group">
+          <span className="config-panel__label" style={{ opacity: 0, userSelect: 'none' }}>&nbsp;</span>
+          <button
+            className="btn btn--primary"
+            onClick={handleRun}
+            disabled={loading || hasErrors}
+            id="run-simulation-btn"
+            style={{ width: '100%' }}
+          >
+            {loading ? <span className="btn__spinner" /> : <Play size={16} />}
+            {loading ? 'Simulando...' : 'Ejecutar Simulación'}
+          </button>
+          <span className="config-panel__error" style={{ opacity: 0, userSelect: 'none' }}>&nbsp;</span>
+        </div>
       </section>
 
       {/* ─── Error ─── */}
